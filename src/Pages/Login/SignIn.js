@@ -5,7 +5,7 @@ import {
 } from "react-firebase-hooks/auth";
 import auth from "../../firebase.init";
 import { useForm } from "react-hook-form";
-import Loading from "../Loading/Loading";
+
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
 
@@ -13,8 +13,8 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 const SignIn = () => {
   const { register,formState: { errors },handleSubmit,} = useForm();
 
-  const [signInWithGoogle, gUser, gLoading, gError] = useSignInWithGoogle(auth);
-  const [signInWithEmailAndPassword, user, loading, error] =
+  const [signInWithGoogle, , gLoading, ] = useSignInWithGoogle(auth);
+  const [  loading] =
     useSignInWithEmailAndPassword(auth);
 
   
@@ -24,41 +24,29 @@ const SignIn = () => {
   const location = useLocation();
   let from = location.state?.from?.pathname || "/";
 
-  
-    if (user || gUser) {
-      navigate(from, { replace: true });
+  const token = localStorage.getItem('token')
+
+    if (token) {
+      navigate('/dashboard');
     }
   
 
-  if (loading || gLoading) {
-    return <Loading></Loading>;
-  }
-
-  if (error || gError) {
-    signInError = (
-      <p className="text-red-500 pb-2">
-        <small>{error?.message || gError?.message}</small>
-      </p>
-    );
-  }
 
   const onSubmit = (data) => {
     console.log(data);
-    signInWithEmailAndPassword(data.email, data.password, data.jobId);
 
-
-    fetch('http://localhost:5000/login', {
+    fetch('https://staging-api.erpxbd.com/api/v1/users/login', {
         method: 'POST',
         headers: {
             'content-type': 'application/json'
         },
-        body: JSON.stringify({data})
+        body: JSON.stringify(data)
     })
     .then(res => res.json())
     .then(data =>{
-        if(data.success){
-            localStorage.setItem('accessToken', data.accessToken)
-        }
+        
+            localStorage.setItem('token', data.token)
+        
         console.log(data);
     })
 
@@ -83,11 +71,11 @@ const SignIn = () => {
               </label>
                 <input
                   type="text"
-                  name="jobId"
-                id="jobId"
+                  name="employeeId"
+                id="employeeId"
                   placeholder="Your Job ID"
                   className="input input-bordered input-secondary w-full max-w-xs"
-                  {...register("jobId", {
+                  {...register("employeeId", {
                     required: {
                       value: true,
                       message: "Job ID is Required",
@@ -106,40 +94,7 @@ const SignIn = () => {
                   )}
                 </label>
               </div>
-            <div className="form-control w-full max-w-xs">
-              <label className="label">
-                <span className="label-text">Email</span>
-              </label>
-              <input
-                type="email"
-                name="email"
-                id="email"
-                placeholder="Your Email"
-                className="input input-bordered input-secondary w-full max-w-xs"
-                {...register("email", {
-                  required: {
-                    value: true,
-                    message: "Email is Required",
-                  },
-                  pattern: {
-                    value: /[a-z0-9]+@[a-z]+\.[a-z]{2,3}/,
-                    message: "Provide a valid Email",
-                  },
-                })}
-              />
-              <label className="label">
-                {errors.email?.type === "required" && (
-                  <span className="label-text-alt text-red-500">
-                    {errors.email.message}
-                  </span>
-                )}
-                {errors.email?.type === "pattern" && (
-                  <span className="label-text-alt text-red-500">
-                    {errors.email.message}
-                  </span>
-                )}
-              </label>
-            </div>
+            
 
             <div className="form-control w-full max-w-xs">
               <label className="label">

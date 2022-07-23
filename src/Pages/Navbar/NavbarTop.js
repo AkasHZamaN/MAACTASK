@@ -1,19 +1,16 @@
 import { LogoutIcon, UserIcon } from "@heroicons/react/solid";
-import { signOut } from "firebase/auth";
+
 import React from "react";
-import { useAuthState } from "react-firebase-hooks/auth";
 import { Link } from "react-router-dom";
-import auth from "../../firebase.init";
 
 import MyProfile from "../Login/MyProfile";
 import logo from '../../images/Frame 28.png';
 
 const NavbarTop = () => {
-    const [user] = useAuthState(auth);
+    const token = localStorage.getItem('token')
 
   const logout = () => {
-    signOut(auth);
-    // localStorage.removeItem('accessToken');
+    localStorage.removeItem('token');
   };
 
 
@@ -21,22 +18,22 @@ const NavbarTop = () => {
     const menuItems = (
         <>
           {
-            user ? 
+            token ? 
             <li>
               <Link to={'/dashboard'}>Dashboard</Link>
             </li> :
             ''
           }
             {
-              user ? '' :
+              token ? '' :
               <li>
             <Link to="/registration">Registration</Link>
             </li>
             } 
           
           {
-          user ? <><div className="dropdown dropdown-end">
-          <label tabIndex="2" className="btn btn-ghost rounded-btn"><span className="text-secondary">{user?.displayName}</span></label>
+          token ? <><div className="dropdown dropdown-end">
+          <label tabIndex="2" className="btn btn-ghost rounded-btn"><span className="text-secondary">{token?.displayName}</span></label>
           <ul tabIndex="2" className="menu dropdown-content p-2 shadow bg-accent rounded-box w-52 mt-4">
             <li className="flex items-center"> 
             <UserIcon className="w-6 h-6 text-white p-0 m-0"></UserIcon> 
@@ -114,7 +111,7 @@ const NavbarTop = () => {
         </div>
         
       </div>
-      <MyProfile key={user?.uid} user={user}></MyProfile>
+      
     </div>
   );
 };

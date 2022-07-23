@@ -8,6 +8,7 @@ import RegionList from './Pages/Dashboard/RegionList';
 import CreateRegion from './Pages/Dashboard/CreateRegion';
 import AreaList from './Pages/Dashboard/AreaList';
 import CreateArea from './Pages/Dashboard/CreateArea';
+import RequireAuth from './Pages/Login/RequireAuth';
 
 function App() {
   return (
@@ -18,7 +19,9 @@ function App() {
         <Route path="/login" element={<Login></Login>}></Route>
         <Route path="/registration" element={<Registration></Registration>}></Route>
 
-      <Route path='dashboard' element={<Dashboard></Dashboard>}>
+      <Route path='dashboard' element={<RequireAuth>
+        <Dashboard></Dashboard>
+      </RequireAuth>}>
         <Route index element={<RegionList></RegionList>}></Route>
         <Route path='createRegion' element={<CreateRegion></CreateRegion>}></Route>
         <Route path='areaList' element={<AreaList></AreaList>}></Route>

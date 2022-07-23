@@ -1,14 +1,7 @@
 import React from "react";
-import {
-  useCreateUserWithEmailAndPassword,
-  useSignInWithGoogle,
-  useUpdateProfile,
-} from "react-firebase-hooks/auth";
-import auth from "../../firebase.init";
 import { useForm } from "react-hook-form";
-import Loading from "../Loading/Loading";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-// import useToken from '../../hooks/useToken';
+import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
+
 
 const SignUp = () => {
   const {
@@ -16,40 +9,42 @@ const SignUp = () => {
     formState: { errors },
     handleSubmit,
   } = useForm();
-  const [signInWithGoogle, gUser, gLoading, gError] = useSignInWithGoogle(auth);
-
-  const [createUserWithEmailAndPassword, user, loading, error] =
-    useCreateUserWithEmailAndPassword(auth, { sendEmailVerification: true });
-
-  const [updateProfile, updating, updateError] = useUpdateProfile(auth);
+  
   const navigate = useNavigate();
   const location = useLocation();
   let from = location.state?.from?.pathname || "/";
 
-  const onSubmit = async (data) => {
-    console.log(data);
-    await createUserWithEmailAndPassword(data.email, data.password);
-    await updateProfile({ displayName: data.name });
-    console.log("updated done");
+  const token = localStorage.getItem('token')
+
+  
+    if(!token){
+        return <Navigate to={'/login'} state={{ from: location}} replace></Navigate>
+    }
+
+    if (token) {
+        navigate(from, { replace: true });
+      }
+  
+
+  const onSubmit = (data) => {
+
+    fetch('https://staging-api.erpxbd.com/api/v1/users/signup', {
+        method: 'POST',
+        headers: {
+            'content-type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+    .then(res => res.json())
+    .then(data => {
+
+        localStorage.setItem('token', data.token)
+        console.log(data);
+    })
+
   };
 
-  if (user || gUser) {
-    navigate(from, { replace: true });
-    //   console.log("google sign in: ", user, gUser);
-  }
-
-  if (loading || gLoading || updating) {
-    return <Loading></Loading>;
-  }
-
-  let signInError;
-  if (error || gError || updateError) {
-    signInError = (
-      <p className="text-red-500 pb-2">
-        <small>{error?.message || gError?.message}</small>
-      </p>
-    );
-  }
+  
 
   return (
     <div style={{
@@ -119,23 +114,23 @@ const SignUp = () => {
               <div className="form-control w-full max-w-xs">
                 <input
                   type="text"
-                  placeholder="Your Job ID"
+                  placeholder="Your employeeId"
                   className="input input-bordered input-secondary w-full max-w-xs"
-                  {...register("jobId", {
+                  {...register("employeeId", {
                     required: {
                       value: true,
-                      message: "Job ID is Required",
+                      message: "employeeId is Required",
                     },
                     pattern: {
                       value: /[a-z0-9]/,
-                      message: "Provide a valid Job Id",
+                      message: "Provide a valid employeeId",
                     },
                   })}
                 />
                 <label className="label">
-                  {errors.jobId?.type === "required" && (
+                  {errors.employeeId?.type === "required" && (
                     <span className="label-text-alt text-red-500">
-                      {errors.jobId.message}
+                      {errors.employeeId.message}
                     </span>
                   )}
                 </label>
@@ -146,7 +141,7 @@ const SignUp = () => {
                   type="text"
                   placeholder="Your Mobile"
                   className="input input-bordered input-secondary w-full max-w-xs"
-                  {...register("mobile", {
+                  {...register("phoneNumber", {
                     required: {
                       value: true,
                       message: "Mobile Number is Required",
@@ -177,8 +172,37 @@ const SignUp = () => {
                       message: "Password is Required",
                     },
                     minLength: {
-                      value: 6,
-                      message: "Must be 6 characters or longer",
+                      value: 8,
+                      message: "Must be 8 characters or longer",
+                    },
+                  })}
+                />
+                <label className="label">
+                  {errors.password?.type === "required" && (
+                    <span className="label-text-alt text-red-500">
+                      {errors.password.message}
+                    </span>
+                  )}
+                  {errors.password?.type === "minLength" && (
+                    <span className="label-text-alt text-red-500">
+                      {errors.password.message}
+                    </span>
+                  )}
+                </label>
+              </div>
+              <div className="form-control w-full max-w-xs">
+                <input
+                  type="password"
+                  placeholder="Your Confirm Password"
+                  className="input input-bordered input-secondary w-full max-w-xs"
+                  {...register("passwordConfirm", {
+                    required: {
+                      value: true,
+                      message: "Password is Required",
+                    },
+                    minLength: {
+                      value: 8,
+                      message: "Must be 8 characters or longer",
                     },
                   })}
                 />
@@ -208,24 +232,15 @@ const SignUp = () => {
                   required
                 >
                   <option value={"default"}>Select Your Role</option>
-                  <option value={"Front End Devoloper"}>
-                    Front End Devoper
+                  <option value={"HUB"}>
+                    HUB
                   </option>
-                  <option value={"Assistant Manager"}>Assistant Manager</option>
-                  <option value={"Full Stack Web Developer"}>
-                    Full Stack Web Developer
-                  </option>
-                  <option value={"MERN Stack Developer"}>
-                    MERN Stack Developer
-                  </option>
-                  <option value={"React Js Developer"}>
-                    React Js Developer
-                  </option>
+                  
                 </select>
               </div>
 
               {/* error handle text down */}
-              {signInError}
+              
               <input
                 className="btn w-full max-w-xs bg-gradient-to-r from-primary to-accent text-white border-0"
                 type="submit"
@@ -243,12 +258,7 @@ const SignUp = () => {
             </p>
 
             <div className="divider">OR</div>
-            <button
-              onClick={() => signInWithGoogle()}
-              className="btn btn-outline btn-secondary"
-            >
-              Google Sign In
-            </button>
+            
           </div>
         </div>
       </div>
