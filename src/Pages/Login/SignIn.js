@@ -1,34 +1,20 @@
 import React from "react";
-import { 
-  useSignInWithEmailAndPassword,
-  useSignInWithGoogle,
-} from "react-firebase-hooks/auth";
-import auth from "../../firebase.init";
 import { useForm } from "react-hook-form";
-
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 
 
 const SignIn = () => {
   const { register,formState: { errors },handleSubmit,} = useForm();
 
-  const [signInWithGoogle, , gLoading, ] = useSignInWithGoogle(auth);
-  const [  loading] =
-    useSignInWithEmailAndPassword(auth);
 
   
 
   let signInError;
   const navigate = useNavigate();
-  const location = useLocation();
-  let from = location.state?.from?.pathname || "/";
+  
 
   const token = localStorage.getItem('token')
-
-    if (token) {
-      navigate('/dashboard');
-    }
   
 
 
@@ -51,6 +37,10 @@ const SignIn = () => {
     })
 
   }; 
+
+  if (token) {
+    navigate('/dashboard');
+  }
   
   return (
     <div style={{
@@ -151,13 +141,7 @@ const SignIn = () => {
             </small>
           </p>
 
-          <div className="divider">OR</div>
-          <button
-            onClick={() => signInWithGoogle()}
-            className="btn btn-outline btn-secondary"
-          >
-            Google Sign In
-          </button>
+          
         </div>
       </div>
     </div>

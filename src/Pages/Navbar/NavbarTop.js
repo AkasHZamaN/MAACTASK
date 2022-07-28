@@ -1,9 +1,6 @@
 import { LogoutIcon, UserIcon } from "@heroicons/react/solid";
-
 import React from "react";
 import { Link } from "react-router-dom";
-
-import MyProfile from "../Login/MyProfile";
 import logo from '../../images/Frame 28.png';
 
 const NavbarTop = () => {
@@ -69,7 +66,7 @@ const NavbarTop = () => {
                 stroke="currentColor"
               >
                 <path
-                  stroke-linecap="round"
+                  strokeLinecap="round"
                   stroke-linejoin="round"
                   stroke-width="2"
                   d="M4 6h16M4 12h8m-8 6h16"

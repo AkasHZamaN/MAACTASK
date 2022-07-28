@@ -1,6 +1,6 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 
 const SignUp = () => {
@@ -17,9 +17,7 @@ const SignUp = () => {
   const token = localStorage.getItem('token')
 
   
-    if(!token){
-        return <Navigate to={'/login'} state={{ from: location}} replace></Navigate>
-    }
+  
 
     if (token) {
         navigate(from, { replace: true });
@@ -256,8 +254,6 @@ const SignUp = () => {
                 </Link>
               </small>
             </p>
-
-            <div className="divider">OR</div>
             
           </div>
         </div>
