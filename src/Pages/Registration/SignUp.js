@@ -1,6 +1,6 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 
 const SignUp = () => {
@@ -11,8 +11,6 @@ const SignUp = () => {
   } = useForm();
   
   const navigate = useNavigate();
-  const location = useLocation();
-  let from = location.state?.from?.pathname || "/";
 
   const token = localStorage.getItem('token')
 
@@ -20,7 +18,7 @@ const SignUp = () => {
   
 
     if (token) {
-        navigate(from, { replace: true });
+        navigate('/login');
       }
   
 

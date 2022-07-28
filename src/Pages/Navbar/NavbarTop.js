@@ -14,39 +14,23 @@ const NavbarTop = () => {
 
     const menuItems = (
         <>
-          {
-            token ? 
+          
+            
             <li>
               <Link to={'/dashboard'}>Dashboard</Link>
-            </li> :
-            ''
-          }
-            {
-              token ? '' :
+            </li> 
+            
+          
+            
+             
               <li>
             <Link to="/registration">Registration</Link>
             </li>
-            } 
-          
-          {
-          token ? <><div className="dropdown dropdown-end">
-          <label tabIndex="2" className="btn btn-ghost rounded-btn"><span className="text-secondary">{token?.displayName}</span></label>
-          <ul tabIndex="2" className="menu dropdown-content p-2 shadow bg-accent rounded-box w-52 mt-4">
-            <li className="flex items-center"> 
-            <UserIcon className="w-6 h-6 text-white p-0 m-0"></UserIcon> 
-              <label  htmlFor="mymodal" className="btn btn-ghost text-white">My Profile</label>
-            </li>
-
-            <li className="flex items-center">
-            <LogoutIcon className="w-6 h-6 text-white p-0 m-0"></LogoutIcon>
-              <button onClick={logout} className="btn btn-ghost text-error">Logout</button>
-              </li> 
-          </ul>
-        </div></> :
+             
           <li>
             <Link to={'/login'}>Login</Link>
         </li>
-        }
+        
           
           
         </>
